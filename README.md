@@ -1,4 +1,4 @@
-# Setup the Waveshare SIM7600G for Jetson Nano
+# Setup the Waveshare SIM7600G
 
 This guide is heavily adapted from the guide published on the waveshare site, available [here](https://www.waveshare.com/wiki/SIM7600G-H_4G_for_Jetson_Nano).
 
@@ -11,38 +11,28 @@ Notes: There seem to be numerous errors and omissions in the instructions as pro
 
 ## Requirements
 
-* Jetson Nano B01
-* Waveshare SIM7600G-H Hat for Jetson Nano
-* Activated SIM with talk/text/data (Mint is tested and works)
-* High-speed internet connection (for host and Jetson)
+* Target PC
+* Waveshare SIM7600A-H Hat
+* Activated SIM with talk/text/data (Mint and T-Mobile is tested and works)
+* High-speed internet connection
 
 ## Hardware Setup
 
-1. Power off the Jetson Nano
-1. Install your activated SIM card in the holder on the underside of the SIM7600G-H hat.
-1. Install the SIM7600G-H hat by seating it firmly on the J-41 40-pin header making sure it's aligned properly.
-1. Connect the provided USB - micro USB adapter between the Nano and the hat.
-1. Remove the protective tape covering the `RXD` and `TXD` dip switch to set them both to `ON`
-1. Power on the Jetson Nano.
+1. Power off target
+2. Install your activated SIM card in the holder on the underside of the SIM7600A-H hat
+3. Install the SIM7600A-H by attaching it via USB to the target
+4. Power on the target
 
 * The `PWR` indicator should come on.
 * After a moment, the `NET` light should start blinking. 
 
-1. Log into your Jetson Nano over `ssh` and complete the rest of the steps.
+5. Log into the target over `ssh` and complete the rest of the steps.
 
 ## Software Setup
 
 1. `$ sudo apt-get update`
-1. `$ sudo apt-get install p7zip python3-serial minicom Jetson.GPIO -y`
-1. `$ wget https://www.waveshare.com/w/upload/9/9b/SIM7600X_4G_for_JETSON_NANO.7z`
-1. `$ p7zip --uncompress SIM7600X_4G_for_JETSON_NANO.7z`
+2. `$ sudo apt-get install udhcpc minicom`
 
-## Enable the Hardware (only necessary for testing before the kernel module is installed)
-
-1. `$ echo 200 > /sys/class/gpio/export`
-1. `$ echo out > /sys/class/gpio/gpio200/direction`
-1. `$ echo 1 > /sys/class/gpio/gpio200/value`
-1. `$ echo 0 > /sys/class/gpio/gpio200/value`
 
 ## Testing
 
@@ -98,11 +88,11 @@ At this point, the instructions provided by Waveshare call for using `minicom`, 
 ```
  
 1. Escape to the `configuration` menu
-1. Select `Screen and keyboard` and press `enter`.
-1. Press `q` to toggle `Local echo` to `Yes`
-1. Escape to the `configuration` menu
-1. Select `Save setup as dfl` and press `enter`
-1. Select `Exit from Minicom` and press `enter`
+2Select `Screen and keyboard` and press `enter`.
+3 Press `q` to toggle `Local echo` to `Yes`
+4 Escape to the `configuration` menu
+5 Select `Save setup as dfl` and press `enter`
+6 Select `Exit from Minicom` and press `enter`
 
 ### On To Testing
 
@@ -111,11 +101,11 @@ For a full list of commands, see the [AT Command Manual](https://www.waveshare.c
 #### With `minicom`
 
 1. `$ sudo minicom -D /dev/ttyUSB2`
-1. Enter `ATI`
-1. If you can't see your local echo, you may need to enable it:
+2 Enter `ATI`
+3 If you can't see your local echo, you may need to enable it:
 	1. Press `ctrl+a` then `z` to bring up the options menu.
-	1. Press `e` to enable echo
-	1. `esc` to return to the console  
+	2 Press `e` to enable echo
+	3 `esc` to return to the console  
 
 ```
 ATI
@@ -129,40 +119,14 @@ IMEI: 868822040061788
 OK
 ```
 
-#### With Python
-
-1. `$ cd SIM7600X_4G_for_JETSON_NANO/AT`
-1. `$ sudo python3 AT.py`
-
-If you wait long enough, you'll get the following output:
-
-```
-SIM7600X is ready
-Please input the AT command:
-```
-
-1. Enter `ATI` to get product identification info:
-
-```
-Please input the AT command:ATI
-
-Manufacturer: SIMCOM INCORPORATED
-Model: SIMCOM_SIM7600G-H
-Revision: SIM7600M22_V2.0
-IMEI: 868822040061788
-+GCAP: +CGSM
-
-OK
-```
-
 #### Pure bash shell
 
-1. `ssh` into your Jetson Nano.
-1. Start listening to the SIM7600G-H serial device: `$ cat < /dev/ttyUSB2`
-1. Open a second terminal window and `ssh` into your Jetson Nano and complete the following steps.
-1. Switch to root user: `$ sudo su`
-1. Send a request for product identification info: `# echo -e 'ATI\r' > /dev/ttyUSB2`
-1. Now check the first terminal window for the output.
+1. `ssh` into the target
+2 Start listening to the SIM7600AH serial device: `$ cat < /dev/ttyUSB2`
+3 Open a second terminal window and `ssh` into your Jetson Nano and complete the following steps.
+4 Switch to root user: `$ sudo su`
+5 Send a request for product identification info: `# echo -e 'ATI\r' > /dev/ttyUSB2`
+6 Now check the first terminal window for the output.
 
 ## 4G connection
 
@@ -174,54 +138,14 @@ OK
 1. `$ wget https://www.waveshare.com/w/upload/4/46/Simcom_wwan.zip`
 1. `$ unzip Simcom_wwan.zip`
 
-## Compile, and Install Driver
-
-Got help figuring this one out from [here](https://stackoverflow.com/questions/3140478/fatal-module-not-found-error-using-modprobe).
-
-1. Modify the Makefile (basically rewrite it): `$ nano Makefile`
-
-```
-obj-m:=simcom_wwan.o
-simcom_wwanmodule-objs:=module
-MAKE:=make
-PWD=$(shell pwd)
-VER=$(shell uname -r)
-KERNEL_BUILD=/lib/modules/$(VER)/build
-INSTALL_ROOT=/
-
-default:
-	$(MAKE) -C $(KERNEL_BUILD) M=$(PWD) modules
-clean:
-	$(MAKE) -C $(KERNEL_BUILD) M=$(PWD) clean
-install:
-	$(MAKE) -C $(KERNEL_BUILD) M=$(PWD) INSTALL_MOD_PATH=$(INSTALL_ROOT) modules_install
-```
-
-1. Press `ctrl+x` then `y` then `enter` to save and exit.
-1. `$ sudo make clean`
-1. `$ sudo make`
-1. `$ sudo make install`
-	* note: try `sudo make install ./simcom*.* /lib/modules/4.9.140-tegra` on the latest image release if the above fails.
-1. `$ sudo depmod`
-1. `$ sudo modprobe -v simcom_wwan`
-1. Check for `simcom_wwan` to confirm successful installation: `$ sudo lsmod`
-1. Check kernel messages for successful installation: `$ sudo dmesg | grep simcom`
-
-```
-[ 1689.111826] simcom_wwan: loading out-of-tree module taints kernel.
-[ 1689.122659] simcom usbnet bind here
-[ 1689.125414] simcom_wwan 1-2.3:1.5 wwan0: register 'simcom_wwan' at usb-70090000.xusb-2.3, SIMCOM wwan/QMI device, f6:2d:53:fe:c8:5c
-[ 1689.125486] usbcore: registered new interface driver simcom_wwan
-```
-
 ## Setup Network Interface `wwan0`
 
 1. Check if the `wwan0` interface is present: `$ ifconfig wwan0`
-1. Enable the `wwan0` interface: `$ sudo ifconfig wwan0 up`
-1. Switch to root user: `$ sudo su`
-1. Define network mode as automatic: `# echo -e 'AT+CNMP=2\r' > /dev/ttyUSB2`
-1. Connect the NIC to the network: `# echo -e 'AT$QCRMCALL=1,1\r' > /dev/ttyUSB2`
-1. Allocate IP: `$ sudo dhclient -1 -v wwan0`
+2 Enable the `wwan0` interface: `$ sudo ifconfig wwan0 up`
+3 Switch to root user: `$ sudo su`
+4 Define network mode as automatic: `# echo -e 'AT+CNMP=2\r' > /dev/ttyUSB2`
+5 Connect the NIC to the network: `# echo -e 'AT$QCRMCALL=1,1\r' > /dev/ttyUSB2`
+6 Allocate IP: `$ sudo udhcpc -i wwan0`
 
 Now you can use 4G network!
 
@@ -244,12 +168,6 @@ It's recommended that you clone the repo locally on the Jetson Nano.
 * To start the service and 4G LTE connectivity: `$ sudo systemctl start simcom_wwan@wwan0.service`
 * To stop the service and 4G LTE connectivity: `$ sudo systemctl stop simcom_wwan@wwan0.service`
 * To check the status of the service: `$ sudo systemctl status simcom_wwan@wwan0.service`
-
-### To make sure the Jetson Nano loads the `simcom_wwan` kernel module driver:
-
-1. `$ sudo nano /etc/modules-load.d/modules.conf`
-1. Add `simcom_wwan` to this file if it's not already there.
-1. Ctrl-X, Y, Enter (Save and close)
 
 ### To make the `sim_comwwan@wwan0` service wait for the USB device:
 
