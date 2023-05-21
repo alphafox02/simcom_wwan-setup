@@ -2,7 +2,7 @@
 
 This guide is heavily adapted from the guide published on the waveshare site, available [here](https://www.waveshare.com/wiki/SIM7600G-H_4G_for_Jetson_Nano).
 
-Notes: There seem to be numerous errors and omissions in the instructions as provided by Waveshare. This guide documents my process so that others may avoid many wasted hours of effort. It turns out that you don't need `udhcpc` if you already have `dhclient` installed. You also don't need `minicom` or `screen`. There is a way to send and view serial using two terminal windows and built in commands `cat` and `echo`.
+Notes: There seem to be numerous errors and omissions in the instructions as provided by Waveshare. This guide documents my process so that others may avoid many wasted hours of effort. It turns out that you do need `udhcpc` even if you already have `dhclient` installed (dhclient caused issues for me). You also don't need `minicom` or `screen`. There is a way to send and view serial using two terminal windows and built in commands `cat` and `echo`.
 
 ## Assumptions
 
