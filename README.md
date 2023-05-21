@@ -59,7 +59,7 @@ At this point, the instructions provided by Waveshare call for using `minicom`, 
 ```
 
 1. Arrow down to `Modem and Dialing` and press `enter`
-1. Remove "Dialing prefix", "Dialing suffix", and "Hang-up string" entries to match:
+2. Remove "Dialing prefix", "Dialing suffix", and "Hang-up string" entries to match:
 
 ```
  +--------------------[Modem and dialing parameter setup]---------------------+
@@ -88,11 +88,11 @@ At this point, the instructions provided by Waveshare call for using `minicom`, 
 ```
  
 1. Escape to the `configuration` menu
-2Select `Screen and keyboard` and press `enter`.
-3 Press `q` to toggle `Local echo` to `Yes`
-4 Escape to the `configuration` menu
-5 Select `Save setup as dfl` and press `enter`
-6 Select `Exit from Minicom` and press `enter`
+2. Select `Screen and keyboard` and press `enter`.
+3. Press `q` to toggle `Local echo` to `Yes`
+4. Escape to the `configuration` menu
+5. Select `Save setup as dfl` and press `enter`
+6. Select `Exit from Minicom` and press `enter`
 
 ### On To Testing
 
@@ -122,30 +122,22 @@ OK
 #### Pure bash shell
 
 1. `ssh` into the target
-2 Start listening to the SIM7600AH serial device: `$ cat < /dev/ttyUSB2`
-3 Open a second terminal window and `ssh` into your Jetson Nano and complete the following steps.
-4 Switch to root user: `$ sudo su`
-5 Send a request for product identification info: `# echo -e 'ATI\r' > /dev/ttyUSB2`
-6 Now check the first terminal window for the output.
+2. Start listening to the SIM7600AH serial device: `$ cat < /dev/ttyUSB2`
+3. Open a second terminal window and `ssh` into your Jetson Nano and complete the following steps.
+4. Switch to root user: `$ sudo su`
+5. Send a request for product identification info: `# echo -e 'ATI\r' > /dev/ttyUSB2`
+6. Now check the first terminal window for the output.
 
 ## 4G connection
-
-### Download
-
-1. `$ cd`
-1. `$ mkdir Simcom_wwan`
-1. `$ cd Simcom_wwan`
-1. `$ wget https://www.waveshare.com/w/upload/4/46/Simcom_wwan.zip`
-1. `$ unzip Simcom_wwan.zip`
 
 ## Setup Network Interface `wwan0`
 
 1. Check if the `wwan0` interface is present: `$ ifconfig wwan0`
-2 Enable the `wwan0` interface: `$ sudo ifconfig wwan0 up`
-3 Switch to root user: `$ sudo su`
-4 Define network mode as automatic: `# echo -e 'AT+CNMP=2\r' > /dev/ttyUSB2`
-5 Connect the NIC to the network: `# echo -e 'AT$QCRMCALL=1,1\r' > /dev/ttyUSB2`
-6 Allocate IP: `$ sudo udhcpc -i wwan0`
+2. Enable the `wwan0` interface: `$ sudo ifconfig wwan0 up`
+3. Switch to root user: `$ sudo su`
+4. Define network mode as automatic: `# echo -e 'AT+CNMP=2\r' > /dev/ttyUSB2`
+5. Connect the NIC to the network: `# echo -e 'AT$QCRMCALL=1,1\r' > /dev/ttyUSB2`
+6. Allocate IP: `$ sudo udhcpc -i wwan0`
 
 Now you can use 4G network!
 
@@ -156,11 +148,11 @@ There are scripts included in this repo that allow you to install 4G connectivit
 It's recommended that you clone the repo locally on the Jetson Nano.
 
 1. `$ git clone https://github.com/phillipdavidstearns/simcom_wwan-setup.git`
-1. `$ cd simcom_wwan-setup`
-1. `$ chmod +x install.sh uninstall.sh update.sh`
-1. To install: `$ sudo ./install.sh`
-1. To uninstall: `$ sudo ./uninstall.sh` 
-1. To update: `$ git pull; sudo ./update.sh`
+2. `$ cd simcom_wwan-setup`
+3. `$ chmod +x install.sh uninstall.sh update.sh`
+4. To install: `$ sudo ./install.sh`
+5. To uninstall: `$ sudo ./uninstall.sh` 
+6. To update: `$ git pull; sudo ./update.sh`
 
 * This service is disabled by default and will not start at boot.
 * To enable, run `$ sudo systemctl enable simcom_wwan@wwan0.service`
@@ -172,8 +164,8 @@ It's recommended that you clone the repo locally on the Jetson Nano.
 ### To make the `sim_comwwan@wwan0` service wait for the USB device:
 
 1. `$ sudo nano /etc/udev/rules.d/99-usb-4g.rules`
-1. Add the line: `SUBSYSTEM=="tty", KERNEL=="ttyUSB2", TAG+="systemd", ENV{SYSTEMD_WANTS}+="simcom_wwan@wwan0.service"`
-1. Ctrl-X, Y, Enter (Save and close)
+2. Add the line: `SUBSYSTEM=="tty", KERNEL=="ttyUSB2", TAG+="systemd", ENV{SYSTEMD_WANTS}+="simcom_wwan@wwan0.service"`
+3. Ctrl-X, Y, Enter (Save and close)
 
 ### Test the changes
 
