@@ -13,7 +13,7 @@ Notes: There seem to be numerous errors and omissions in the instructions as pro
 
 * Target PC
 * Waveshare SIM7600A-H Hat
-* Activated SIM with talk/text/data (Mint and T-Mobile is tested and works)
+* Activated SIM with talk/text/data (Mint and T-Mobile are both tested and work)
 * High-speed internet connection
 
 ## Hardware Setup
