@@ -123,7 +123,7 @@ OK
 
 1. `ssh` into the target
 2. Start listening to the SIM7600AH serial device: `$ cat < /dev/ttyUSB2`
-3. Open a second terminal window and `ssh` into your Jetson Nano and complete the following steps.
+3. Open a second terminal window and `ssh` into the target computer and complete the following steps.
 4. Switch to root user: `$ sudo su`
 5. Send a request for product identification info: `# echo -e 'ATI\r' > /dev/ttyUSB2`
 6. Now check the first terminal window for the output.
@@ -145,9 +145,9 @@ Now you can use 4G network!
 
 There are scripts included in this repo that allow you to install 4G connectivity at boot using `systemd` service files, a preup script and a poststop script to automate the steps in the "Setup Network Interface `wwan0`" section above.
 
-It's recommended that you clone the repo locally on the Jetson Nano.
+It's recommended that you clone the repo locally on the target computer.
 
-1. `$ git clone https://github.com/phillipdavidstearns/simcom_wwan-setup.git`
+1. `$ git clone https://github.com/alphafox02/simcom_wwan-setup.git`
 2. `$ cd simcom_wwan-setup`
 3. `$ chmod +x install.sh uninstall.sh update.sh`
 4. To install: `$ sudo ./install.sh`
