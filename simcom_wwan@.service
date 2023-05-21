@@ -6,7 +6,7 @@ After=network.target
 Type=oneshot
 RemainAfterExit=yes
 ExecStartPre=/bin/bash /etc/simcom_wwan/wwan_preup.sh -i %i
-ExecStart=/sbin/dhclient -1 %i
+ExecStart=/sbin/udhcpc -i %i
 ExecStopPost=/bin/bash /etc/simcom_wwan/wwan_postdown.sh -i %i
 
 [Install]
