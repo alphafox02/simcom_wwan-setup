@@ -1,6 +1,7 @@
 #!/bin/bash
 
-MODULE="simcom_wwan"
+#MODULE="simcom_wwan"
+MODULE="qmi_wwan"
 IFACE="wwan0"
 DEV="ttyUSB2"
 
