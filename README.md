@@ -170,3 +170,9 @@ It's recommended that you clone the repo locally on the target computer.
 ### Test the changes
 
 1. `$ sudo reboot`
+
+### References to consider
+* https://techship.com/faq/how-to-integrate-simcom-sim7500-sim7600-series-linux-ndis-driver-without-rebuilding-kernel/
+* https://techship.com/faq/how-to-automated-connection-establishment-with-sim7600-series-modules-when-using-rndis-usb-mode/
+
+
